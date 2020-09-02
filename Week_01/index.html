@@ -14,8 +14,8 @@
 <div id="board"></div>
 <script>
     const pattern = [
-        [0 ,2 ,0],
-        [0 ,1 ,0],
+        [0 ,0 ,0],
+        [0 ,0 ,0],
         [0 ,0 ,0],
     ]
     let color = 1
@@ -49,6 +49,7 @@
     }
     function computermove() {
         let choice = bestChoose(pattern,color)
+        console.log('choice',choice);
         if (choice.point) {
             pattern[choice.point[0]][choice.point[1]] = color
         }
@@ -58,11 +59,11 @@
         color = 3 - color
         show(pattern)
     }
-    function check(pattern,color) {
-        for (let i = 0; i < pattern.length; i++) {
+    function check(pat,col) {
+        for (let i = 0; i < pat.length; i++) {
             let winerflag = true
-            for (let j = 0; j < pattern[i].length; j++) {
-                if (pattern[i][j] !== color) {
+            for (let j = 0; j < pat[i].length; j++) {
+                if (pat[i][j] !== col) {
                     winerflag = false
                 }
                 
@@ -71,10 +72,10 @@
                 return true
             }
         }
-        for (let i = 0; i < pattern.length; i++) {
+        for (let i = 0; i < pat.length; i++) {
             let winerflag = true
-            for (let j = 0; j < pattern[i].length; j++) {
-                if (pattern[j][i] !== color) {
+            for (let j = 0; j < pat[i].length; j++) {
+                if (pat[j][i] !== col) {
                     winerflag = false
                 }
                 
@@ -83,10 +84,10 @@
                 return true
             }
         }
-        for (let i = 0; i < pattern.length; i++) {
+        for (let i = 0; i < pat.length; i++) {
             let winerflag = true
-            for (let j = 0; j < pattern[i].length; j++) {
-                if (pattern[j][j] !== color) {
+            for (let j = 0; j < pat[i].length; j++) {
+                if (pat[j][j] !== col) {
                     winerflag = false
                 }
                 
@@ -95,10 +96,10 @@
                 return true
             }
         }
-        for (let i = 0; i < pattern.length; i++) {
+        for (let i = 0; i < pat.length; i++) {
             let winerflag = true
-            for (let j = 0; j < pattern[i].length; j++) {
-                if (pattern[j][2-j] !== color) {
+            for (let j = 0; j < pat[i].length; j++) {
+                if (pat[j][2-j] !== col) {
                     winerflag = false
                 }
                 
@@ -112,16 +113,15 @@
         // return Object.create(obj)
         return JSON.parse(JSON.stringify(obj)) 
     }
-    function willwin(pattern,color) {
-        console.log('willwin====',pattern);
-        for (let i = 0; i < pattern.length; i++) {
-            for (let j = 0; j < pattern[i].length; j++) {
-                if (pattern[i][j]) {
+    function willwin(pat,col) {
+        for (let i = 0; i < pat.length; i++) {
+            for (let j = 0; j < pat[i].length; j++) {
+                if (pat[i][j]) {
                     continue
                 }
-                let temp = clone(pattern)
-                temp[i][j] = color
-                if ( check(temp,color)) {
+                let temp = clone(pat)
+                temp[i][j] = col
+                if ( check(temp,col)) {
                     return [i,j]
                 }
             }
@@ -129,10 +129,10 @@
         }
         return null
     }
-    function bestChoose(pattern,color) {
-        let p
-        console.log('p===',p = willwin(pattern,color));
-        if (p = willwin(pattern,color)) {
+    function bestChoose(pat,col) {
+        let p = willwin(pat,col)
+        if (p) {
+            console.log('p===============', p);
             return {
                 point: p,
                 result: 1
@@ -140,14 +140,14 @@
         }
         let result = -2
         let point = null
-        outer:for (let i = 0; i < pattern.length; i++) {
-            for (let j = 0; j < pattern[i].length; j++) {
-                if (pattern[i][j]) {
+        outer:for (let i = 0; i < pat.length; i++) {
+                for (let j = 0; j < pat[i].length; j++) {
+                if (pat[i][j]) {
                     continue
                 }
-                const temp = clone(pattern)
-                temp[i][j] = color
-                let r = bestChoose(temp,3-color).result
+                const temp = clone(pat)
+                temp[i][j] = col
+                let r = bestChoose(temp,3-col).result
                 if (-r > result) {
                     point =  [i,j];
                     result = -r;
